@@ -309,7 +309,7 @@ func simpleName(name string, names map[string]struct{}) (string, error) {
 	}
 	for n := 0; n < len(names)+1; n++ {
 		ns := strconv.Itoa(n)
-		stemLen := 15 - len(ext) - len(ns)
+		stemLen := 25 - len(ext) - len(ns)
 		if stemLen < 0 {
 			break
 		}

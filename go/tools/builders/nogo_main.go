@@ -386,7 +386,11 @@ func checkAnalysisResults(actions []*action, pkg *goPackage) string {
 		}
 		// Discard diagnostics based on the analyzer configuration.
 		for _, d := range act.diagnostics {
-			filename := pkg.fset.File(d.Pos).Name()
+			file := pkg.fset.File(d.Pos)
+			if file == nil {
+				continue
+			}
+			filename := file.Name()
 			include := true
 			if len(config.onlyFiles) > 0 {
 				// This analyzer emits diagnostics for only a set of files.

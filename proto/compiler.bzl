@@ -99,6 +99,7 @@ def go_proto_compile(go, compiler, protos, imports, importpath):
     args.add("-importpath", importpath)
     args.add("-out_path", outpath)
     args.add("-plugin", compiler.internal.plugin)
+    args.add_all("-protocopt", compiler.internal.protocopts)
 
     # TODO(jayconrod): can we just use go.env instead?
     args.add_all(compiler.internal.options, before_each = "-option")
@@ -190,6 +191,7 @@ def _go_proto_compiler_impl(ctx):
                 go_protoc = ctx.file._go_protoc,
                 plugin = ctx.file.plugin,
                 import_path_option = ctx.attr.import_path_option,
+                protocopts = ctx.attr.protocopts,
             ),
         ),
         library,
@@ -209,6 +211,7 @@ _go_proto_compiler = rule(
             cfg = "exec",
             mandatory = True,
         ),
+        "protocopts": attr.string_list(),
         "_go_protoc": attr.label(
             allow_single_file = True,
             cfg = "exec",

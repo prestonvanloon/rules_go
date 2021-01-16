@@ -49,6 +49,7 @@ func run(args []string) error {
 	descriptors := multiFlag{}
 	expected := multiFlag{}
 	imports := multiFlag{}
+	protocopts := multiFlag{}
 	flags := flag.NewFlagSet("protoc", flag.ExitOnError)
 	protoc := flags.String("protoc", "", "The path to the real protoc.")
 	outPath := flags.String("out_path", "", "The base output path to write to.")
@@ -58,6 +59,7 @@ func run(args []string) error {
 	flags.Var(&descriptors, "descriptor_set", "The descriptor set to read.")
 	flags.Var(&expected, "expected", "The expected output files.")
 	flags.Var(&imports, "import", "Map a proto file to an import path.")
+	flags.Var(&protocopts, "protocopt", "Extra options to pass to protoc.")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
@@ -88,7 +90,9 @@ func run(args []string) error {
 		"--plugin", fmt.Sprintf("%v=%v", strings.TrimSuffix(pluginBase, ".exe"), *plugin),
 		"--descriptor_set_in", strings.Join(descriptors, string(os.PathListSeparator)),
 	}
+	protoc_args = append(protoc_args, protocopts...)
 	protoc_args = append(protoc_args, flags.Args()...)
+
 	cmd := exec.Command(*protoc, protoc_args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
